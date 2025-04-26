@@ -1,1 +1,5 @@
-__pycache__/
+model/__pycache__/
+model/*.pyc
+model/*.pyo
+model/.pytest_cache/
+model/.DS_Store
