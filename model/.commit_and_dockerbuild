@@ -1,4 +1,0 @@
-DOCKER_BUILDKIT=1 docker build -t iama .
-
-git add .
-git commit -m $0
