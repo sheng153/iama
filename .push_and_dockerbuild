@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 if [ -z "$1" ]; then
     echo "❌ Error: Por favor agregue un mensaje para el commit."
