@@ -1,19 +1,10 @@
 #!/usr/bin/env bash
 
-if [ -z "$1" ]; then
-    echo "❌ Error: Por favor agregue un mensaje para el commit."
-    echo "Uso: $0 \"tu_commit\""
-    exit 1
-fi
-
-COMMIT_MSG="$1"
-
 git add .
 
 if ! git diff --cached --quiet; then
-
-    git commit -m "$COMMIT_MSG"
-    echo "Commit: $COMMIT_MSG"
+    git commit --verbose
+    echo "Commit"
 else
 
     echo "Nothing to commit."
