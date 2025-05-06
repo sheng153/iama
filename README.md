@@ -1,5 +1,8 @@
 # iama
 
+.add_and_commit
+Es necesario para .push_and_dockerbuild
+
 .docker_run [command]
 ese bash facilita la ejecucion del docker. Se puede hacer:
     .docker_run -> para ejecutar main.py
@@ -16,10 +19,10 @@ Hace commit de los cambios en Git (si existen) con el mensaje proporcionado.
 Envia la rama main al repositorio remoto.
 
 Asegurense de que ambos archivos tengan permiso de ejecucion si usan linux:
-    sudo chmod +x .docker_run .push_and_dockerbuild
+    sudo chmod +x .add_and_commit .docker_run .push_and_dockerbuild
 
 o usen alguna herramienta como git bash
     1) Abren una terminal de GitBash en la carpeta donde lo clonaron.
     2) Dan permiso de ejecucion a ambos archivos
-        (chmod +x .docker_run .push_and_dockerbuild)
+        (chmod +x .add_and_commit .docker_run .push_and_dockerbuild)
     3) Enjoy!
