@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN YES | python -m nltk.downloader punkt wordnet omw-1.4
+RUN yes | python -m nltk.downloader punkt wordnet omw-1.4
 
 ENTRYPOINT ["python"]
 
