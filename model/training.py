@@ -18,7 +18,7 @@ def initialize_nltk():
 def initialize_intents():
     return (json.loads(open("intents.json").read()), WordNetLemmatizer())
 
-def set_documents(intents, lemmatizer) -> List[Tuple[List[str], str]]:
+def set_documents(intents, lemmatizer):
     return [
         (
             [lemmatizer.lemmatize(w.lower()) 
