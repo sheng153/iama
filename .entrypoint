@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ ! -f /data/dev.db ]; then
+  echo "Initializing database..."
+  sqlite3 /data/dev.db < /app/schema.sql
+  sqlite3 /data/dev.db < /app/seeds.sql
+fi
+
+exec python3 "$@"

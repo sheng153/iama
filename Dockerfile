@@ -11,6 +11,6 @@ COPY . .
 
 RUN yes | python -m nltk.downloader punkt wordnet omw-1.4
 
-ENTRYPOINT ["python"]
+ENTRYPOINT [".entrypoint"]
 
-CMD ["main.py"]
+CMD ["model/main.py"]

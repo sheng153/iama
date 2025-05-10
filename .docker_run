@@ -1,18 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-MODE="${1:-main}"
-
-case "$MODE" in
-    t|train)
-        docker run -i -t iama training.py
-        ;;
-    m|main)
-        docker run -i -t iama
-        ;;
-    *)
-        echo "Error: modo inválido ‘$MODE’."
-        echo "Uso: $0 [train|t|main|m]" >&2
-        exit 1
-        ;;
-esac
+docker run --rm -it -v "$(pwd)/data:/data" -p 8000:8000 --network host iama "$@"

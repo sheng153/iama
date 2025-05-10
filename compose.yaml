@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    volumes:
+      - ./data:/data
+    environment:
+      DATABASE_URL: sqlite:////data/dev.db
+    ports:
+      - "8000:8000"
