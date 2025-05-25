@@ -3,47 +3,60 @@ import json
 import pickle
 import numpy as np
 import nltk
+import sqlite3
 from nltk.stem import WordNetLemmatizer
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout
 from keras.optimizers import SGD
+from sentence_transformers import SentenceTransformer
 
 IGNORE_LETTERS = ['?','!','.',',']
+
+embedder = SentenceTransformer('all-MiniLM-L6-v2')
 
 def initialize_nltk():
     nltk.download('punkt', halt_on_error=False)
     nltk.download('wordnet')
     nltk.download('omw-1.4')
+    nltk.download('punkt_tab')
 
-def initialize_intents():
-    return (json.loads(open("intents.json").read()), WordNetLemmatizer())
+def get_training_data(db_path="/data/dev.db"):
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
 
-def set_documents(intents, lemmatizer):
-    return [
+    cur.execute("""
+        SELECT i.tag, p.pattern
+        FROM patterns p
+        JOIN intents i ON p.intent_id = i.id
+    """)
+    rows = cur.fetchall()
+    conn.close()
+
+    lemmatizer = WordNetLemmatizer()
+    documents = [
         (
-            [lemmatizer.lemmatize(w.lower()) 
-                for w in nltk.word_tokenize(pattern)
-                if w not in IGNORE_LETTERS],
-            intent['tag']
+            [lemmatizer.lemmatize(w.lower()) for w in nltk.word_tokenize(pattern) if w not in IGNORE_LETTERS],
+            tag
         )
-        for intent in intents['intents']
-        for pattern in intent['patterns']
+        for tag, pattern in rows
     ]
 
-def set_BoW(docs):
-    words   = sorted({ w for doc, _ in documents for w in doc }) 
-    classes = sorted({ tag for _, tag in documents })
+    return documents, lemmatizer
 
-    pickle.dump(words,   open('words.pkl','wb'))
-    pickle.dump(classes, open('classes.pkl','wb'))
+def set_embeddings(docs):
+    sentences = [" ".join(doc) for doc, _ in docs]
+    embeddings = embedder.encode(sentences, convert_to_numpy=True)
 
-    return [
-    (
-        [1 if w in doc else 0 for w in words],
-        [1 if c == tag else 0 for c in classes]
-    )
-    for doc, tag in documents
+    classes = sorted({tag for _, tag in docs})
+    with open('/data/classes.json', 'w') as f:
+        json.dump(classes, f)
+
+    labels = [
+        [1 if c==tag else 0 for c in classes]
+        for _,tag in docs
     ]
+
+    return list(zip(embeddings, labels)), classes
 
 def instantiate_model(train_x, train_y):
     model = Sequential()
@@ -56,21 +69,30 @@ def instantiate_model(train_x, train_y):
 
     model.add(Dense(len(train_y[0]), name="output_layer", activation='softmax'))
 
-    sgd = SGD(learning_rate=0.001, decay=1e-6, momentum=0.9, nesterov=True)
+    sgd = SGD(learning_rate=0.001, momentum=0.9, nesterov=True)
     model.compile(loss='categorical_crossentropy', optimizer = sgd, metrics = ['accuracy'])
 
     return model
 
+def log_training_result(acc, db_path="/data/dev.db"):
+    conn = sqlite3.connect(db_path)
+    curr = conn.cursor()
+    curr.execute("INSERT INTO training_logs (accuracy) VALUES (?)", (acc,))
+    conn.commit()
+    conn.close()
+
 if __name__ == '__main__': 
     initialize_nltk()
 
-    intents, lemmatizer = initialize_intents() 
+    documents, lemmatizer = get_training_data() 
 
-    documents = set_documents(intents, lemmatizer)
+    embeddings, classes = set_embeddings(documents)
 
-    train_x, train_y = map(list, zip(*set_BoW(documents)))
+    train_x, train_y = map(list, zip(*embeddings))
 
     model = instantiate_model(train_x, train_y)
 
     model.fit(np.array(train_x), np.array(train_y), epochs=100, batch_size=5, verbose=1)
-    model.save("chatbot_model.h5")
+    score = model.evaluate(np.array(train_x), np.array(train_y), verbose=0)
+    log_training_result(score[1])
+    model.save('/data/chatbot_model.keras')

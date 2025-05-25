@@ -1,0 +1,116 @@
+{
+    "intents": [
+        {
+            "tag": "saludo",
+            "patterns": [
+                "Hola, Tom.",
+                "Hola, me llamo Ken Saitou.",
+                "Hola, soy Nancy.",
+                "¡Hola mundo!",
+                "¡Hola George! ¿Qué tal te va?",
+                "Hola, Roger. Estoy bien.",
+                "Hola, tengo una reserva, mi nombre es Kaori Yoshikawa. Aquí está la tarjeta de confirmación.",
+                "Hola.",
+                "Hola, ¿está el señor Freeman?",
+                "Hola, abuelo.",
+                "Hola, dijo Tom, sonriendo.",
+                "Hola, Paul. ¿Ocupado como siempre?",
+                "¡Hola! ¿Qué tal?",
+                "¡Hola! ¡Buenos días!",
+                "Hola, ¿cómo estás?",
+                "Guus Hiddink es holandés.",
+                "¡Hola! ¿Cómo estás?",
+                "Hola, soy Sepideh.",
+                "Hola, ¿cómo te llamas?",
+                "Hola, ¿qué tal?"
+            ],
+            "responses": [
+                "Esto es una respuesta para el intent saludo."
+            ]
+        },
+        {
+            "tag": "despedida",
+            "patterns": [
+                "Se fue sin decirme adiós.",
+                "—Dima, —dijo Al-Sayib severamente— sabes que eres como un hermano hijo de otra madre para mí, pero... engañar a un árabe es imperdonable. ¡Adiós!",
+                "Él dijo: \"adiós, mis amigos\", y partió.",
+                "¿Cómo se dice \"adiós\" en alemán?",
+                "Entonces nos dimos la mano y nos dijimos adiós.",
+                "El final, ¡adiós!",
+                "Ella dijo adiós y colgó el teléfono.",
+                "¡Adiós!",
+                "Adiós, que te vaya bien.",
+                "Adiós y buena suerte.",
+                "Sin decir adiós, él desapareció entre la multitud.",
+                "Abandonó la casa sin decir adiós.",
+                "Debo decirte adiós.",
+                "Adiós.",
+                "He venido a decir adiós.",
+                "Ve a decirles adiós antes de que se vayan.",
+                "Ella salió de la habitación sin decir adiós.",
+                "Ella colgó sin decir adiós.",
+                "Ella se fue sin ni siquiera decirnos adiós.",
+                "Él dijo: \"Adiós a todos\" y se levantó."
+            ],
+            "responses": [
+                "Esto es una respuesta para el intent despedida."
+            ]
+        },
+        {
+            "tag": "comida",
+            "patterns": [
+                "Tengo hambre porque no he almorzado.",
+                "¡Tengo hambre!",
+                "¡Tengo hambre! ¡Vamos a cenar por favor!",
+                "Acabo de comer, así que no tengo hambre.",
+                "Estoy comiendo frutas porque tengo hambre.",
+                "¿Cuándo comemos? ¡Tengo hambre!",
+                "Como porque tengo hambre.",
+                "No he comido desde el desayuno, tengo hambre.",
+                "Ya tengo hambre.",
+                "Tengo hambre porque no desayuné.",
+                "Tengo hambre, así que voy a buscar algo para comer.",
+                "No tengo hambre.",
+                "Tengo hambre porque no he desayunado.",
+                "Ahora no tengo hambre.",
+                "Me he acabado de comer, así que no tengo hambre.",
+                "Tengo hambre porque no almorcé.",
+                "Siempre tengo hambre.",
+                "No tengo hambre en absoluto.",
+                "Casi no tengo hambre.",
+                "Tengo hambre porque no he comido."
+            ],
+            "responses": [
+                "Esto es una respuesta para el intent comida."
+            ]
+        },
+        {
+            "tag": "emociones",
+            "patterns": [
+                "Estoy feliz porque él pasó el examen.",
+                "Estoy feliz de verte.",
+                "Estoy feliz de verte aquí.",
+                "Estoy feliz de estar contigo.",
+                "No consigo decidir si estoy feliz o triste.",
+                "¡Estoy feliz!",
+                "Estoy feliz porque estoy aprendiendo algo de holandés.",
+                "Estoy feliz con mi novia.",
+                "Estoy feliz porque a partir de hoy, no tendremos clases hasta septiembre.",
+                "No estoy feliz.",
+                "Estoy feliz y satisfecho.",
+                "Estoy feliz de verte otra vez.",
+                "Estoy feliz de encontrarme con usted.",
+                "Tienes un hábito por el que estoy feliz.",
+                "Estoy feliz de oír tu voz.",
+                "¡Estoy feliz de que la manzana que estoy comiendo sea verde!",
+                "Estoy feliz porque estás acá.",
+                "Estoy feliz de haber pasado un día muy bueno con Luke después de dos días muy estresantes.",
+                "Estoy feliz de que sigas con vida.",
+                "Estoy feliz de escuchar tu voz."
+            ],
+            "responses": [
+                "Esto es una respuesta para el intent emociones."
+            ]
+        }
+    ]
+}

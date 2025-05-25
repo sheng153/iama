@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      network: host
+    network_mode: host
+    stdin_open: true
+    tty: true
+    environment:
+      DATABASE_URL: sqlite:////data/dev.db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/data

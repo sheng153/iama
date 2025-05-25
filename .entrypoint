@@ -3,8 +3,8 @@ set -euo pipefail
 
 if [ ! -f /data/dev.db ]; then
   echo "Initializing database..."
-  sqlite3 /data/dev.db < /app/schema.sql
-  sqlite3 /data/dev.db < /app/seeds.sql
+  sqlite3 /data/dev.db < /app/database/schema.sql
+  sqlite3 /data/dev.db < /app/database/seeds.sql
 fi
 
-exec python3 "$@"
+exec "$@"

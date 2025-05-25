@@ -1,62 +1,74 @@
 import random
 import json
-import pickle
 import numpy as np
+import sqlite3
 
 import nltk
 from nltk.stem import WordNetLemmatizer
 
 from keras.models import load_model
+from sentence_transformers import SentenceTransformer
 
+DB_PATH = "/data/dev.db"
+MODEL_PATH = "/data/chatbot_model.keras"
+CLASSES_PATH = "/data/classes.json"
+
+embedder = SentenceTransformer('all-MiniLM-L6-v2')
+model = load_model(MODEL_PATH)
+
+with open(CLASSES_PATH, 'r') as f:
+    classes = json.load(f)
+ 
 lemmatizer = WordNetLemmatizer()
+model = load_model('/data/chatbot_model.keras')
 
-#importo los archivos generados anteriormente
-intents = json.loads(open('intents.json').read())
-words = pickle.load(open('words.pkl', 'rb'))
-classes = pickle.load(open('classes.pkl', 'rb'))
-model = load_model('chatbot_model.h5')
+def download_nltk(): 
+    nltk.download('punkt')
+    nltk.download('wordnet')
+    nltk.download('omw-1.4')
 
-#tranformo palabras de oración a su forma raíz
 def clean_up_sentence(sentence):
     sentence_words = nltk.word_tokenize(sentence)
-    sentence_words = [lemmatizer.lemmatize(word) for word in sentence_words]
-    return sentence_words
+    return [lemmatizer.lemmatize(word) for word in sentence_words] 
 
-#convierto la información a unos y ceros según si están presentes en los patrones
 def bag_of_words(sentence):
     sentence_words = clean_up_sentence(sentence)
-    bag = [0]*len(words)
-    for w in sentence_words:
-        for i, word in enumerate(words):
-            if word == w:
-                bag[i]=1
+    bag = [1 if w in sentence_words else 0 for w in words]
     print(bag)
     return np.array(bag)
 
-#predecir la categoría a la que pertenece la oración
 def predict_class(sentence):
     bow = bag_of_words(sentence)
-    res = model.predict(np.array([bow]))[0]
-    #probabilidad mas alta en la prediccion
-    max_index = np.where(res ==np.max(res))[0][0]
-    category = classes[max_index]
-    return category
+    res = model.predict(np.array([bow]), verbose = 0)[0]
+    max_index = np.argmax(res)
+    return classes[max_index]
 
-#obtengo una respuesta aleatoria en base a la categoria
-def get_response(tag, intents_json):
-    list_of_intents = intents_json['intents']
-    result = ""
-    for i in list_of_intents:
-        if i["tag"]==tag:
-            result = random.choice(i['responses'])
-            break
-    return result
+def get_responses_by_tag(tag, db_path=DB_PATH):
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT r.response
+        FROM responses r
+        JOIN intents i ON r.intent_id = i.id 
+        WHERE i.tag = ?
+    """, (tag, ))
+    results = cur.fetchall()
+    conn.close()
+    return [r[0] for r in results]
 
 def respuesta(message):
-    ints = predict_class(message)
-    res = get_response(ints, intents)
-    return res
+    vec = embedder.encode([message], convert_to_numpy = True)
 
-while True:
-    message = input()
-    print(respuesta(message))
+    probs = model.predict(vec, verbose=0)[0]
+
+    idx = probs.argmax()
+    tag = classes[idx]
+
+    options = get_responses_by_tag(tag)
+    return random.choice(options) if options else "Perdón, no entendí"
+
+if __name__ == "__main__":
+    while True:
+        message = input("Tu: ")
+        print("Bot: ", respuesta(message))

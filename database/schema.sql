@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS conversation (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_input  TEXT    NOT NULL,
+  intent      TEXT    NOT NULL,
+  bot_reply   TEXT    NOT NULL,
+  timestamp   DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS intents (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tag TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS patterns (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    intent_id INTEGER NOT NULL,
+    pattern TEXT NOT NULL,
+    FOREIGN KEY (intent_id) REFERENCES intents (id)
+);
+
+CREATE TABLE IF NOT EXISTS training_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    accuracy REAL
+);
+
+CREATE TABLE IF NOT EXISTS responses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    intent_id INTEGER NOT NULL,
+    response TEXT NOT NULL,
+    FOREIGN KEY (intent_id) REFERENCES intents(id)
+);
