@@ -4,8 +4,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 DB_PATH = "/data/dev.db"
 MODEL_PATH = "/data/phi2-chatbot"
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
-model = AutoModelForCausalLM.from_pretrained(MODEL_PATH)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, local_files_only=True)
+model = AutoModelForCausalLM.from_pretrained(MODEL_PATH, local_files_only=True)
 chat = pipeline("text-generation", model=model, tokenizer=tokenizer, max_length=256, do_sample=true, temperature=.7)
 
 def log_conversation(role, content):
