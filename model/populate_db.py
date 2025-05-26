@@ -28,7 +28,7 @@ def populate_db():
             data = json.load(f)
 
         for intent in data.get("intents", []):
-            for pattern in intents.get("patterns", []):
+            for pattern in intent.get("patterns", []):
                 cur.execute("INSERT INTO conversation (role, content) VALUES (?, ?)", ("user", pattern))
 
             for response in intent.get("responses", []):
