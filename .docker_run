@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-docker run --rm -it -v "$(pwd)/data:/data" -p 8000:8000 --network host iama "$@"
+if [ $# -gt 0 ]; then
+    docker-compose run --rm app "$@"
+else
+    docker-compose up --build
+fi

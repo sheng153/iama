@@ -1,26 +1,31 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DOCKER_BUILDKIT=1 docker build --network=host -t iama ./model/
+echo "Construyendo Imágenes"
+docker-compose build --parallel
 
-./.add_and_commit
+./.add_and_commit "-m Build: $(date +'%Y-%m-%d %H:%M')"
 
-if git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; then
+if git rev-parse --abbrev-ref --symbolic-full-name @{u} > /dev/null 2>&1; then
     LOCAL=$(git rev-parse @)
     REMOTE=$(git rev-parse "@{u}")
     BASE=$(git merge-base @ "@{u}")
 
-    if [ "$LOCAL" = "$BASE" ]; then
-        echo "No hay nuevos commits locales para pushear."
+    if [ "$LOCAL" != "$REMOTE" ] && [ "$LOCAL" = "$BASE" ]; then
+        git push
+        echo "Código empujado a $(git rev-parse --abbrev-ref HEAD)."
     else
-        if [ "$LOCAL" = "$REMOTE" ]; then
-            echo "Rama remota y local iguales, nada que push."
-        else
-            git push origin main
-            echo "Push"
-        fi
+        echo "Nada nuevo para push de código"
     fi
 else
-    git push origin main
-    echo "Push exitoso (sin upstream configurado)"
+    git push --set-upstream origin main
+    echo "Push exitoso (upstream configurado)"
+fi
+
+if docker-compose config | grep -q 'image:'; then
+    echo "Empujando imágenes al registro"
+    docker-compose push
+    echo "Imágenes empujadas"
+else
+    echo "No hay imágenes configuradas en docker-compose. Omite push de imágenes."
 fi

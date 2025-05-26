@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [ ! -f /data/dev.db ]; then
-  echo "Initializing database..."
-  sqlite3 /data/dev.db < /app/database/schema.sql
-  sqlite3 /data/dev.db < /app/database/seeds.sql
+DB="/data/dev.db"
+SCHEMA="/app/database/schema.sql"
+POPULATOR="/app/model/populate_db.py"
+
+if [ ! -f "$DB" ] || [ "$FORCE_DB_INIT" = 1 ]; then
+  echo "Inicializando base de datos en $DB"
+  sqlite3 "$DB" < "$SCHEMA"
+
+  echo "Populando base de datos."
+  python3 "$POPULATOR"
 fi
 
 exec "$@"

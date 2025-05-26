@@ -15,7 +15,6 @@ COPY database/ ./database
 COPY ejemplos/ ./ejemplos
 COPY intents.json /app/intents.json
 
-RUN yes | python -m nltk.downloader punkt wordnet omw-1.4
 
 COPY .entrypoint .
 RUN chmod +x .entrypoint

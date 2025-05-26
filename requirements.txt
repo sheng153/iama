@@ -1,5 +1,6 @@
-nltk
-keras
 Flask
 SQLAlchemy
-sentence-transformers==2.6.1
+transformers
+datasets
+peft
+accelerate

@@ -9,6 +9,15 @@ def populate_db():
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS conversation (
+          id          INTEGER PRIMARY KEY AUTOINCREMENT,
+          role        TEXT    NOT NULL,
+          content     TEXT    NOT NULL,
+          timestamp   DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+    """)
+
     for fname in os.listdir(EXAMPLES_DIR):
         if not fname.endswith(".json"):
             continue
@@ -18,17 +27,12 @@ def populate_db():
         with open(os.path.join(EXAMPLES_DIR, fname), "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        for intent in data["intents"]:
-            tag = intent["tag"]
+        for intent in data.get("intents", []):
+            for pattern in intents.get("patterns", []):
+                cur.execute("INSERT INTO conversation (role, content) VALUES (?, ?)", ("user", pattern))
 
-            cur.execute("INSERT INTO intents (tag) VALUES (?)", (tag,))
-            intent_id = cur.lastrowid
-
-            for pattern in intent["patterns"]:
-                cur.execute("INSERT INTO patterns (intent_id, pattern) VALUES (?, ?)", (intent_id, pattern))
-
-            for response in intent["responses"]:
-                cur.execute("INSERT INTO responses (intent_id, response) VALUES (?, ?)", (intent_id, response))
+            for response in intent.get("responses", []):
+                cur.execute("INSERT INTO conversation (role, content) VALUES (?, ?)", ("assistant", response))
 
     
     conn.commit()
