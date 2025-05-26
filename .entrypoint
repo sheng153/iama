@@ -5,7 +5,7 @@ DB="/data/dev.db"
 SCHEMA="/app/database/schema.sql"
 POPULATOR="/app/model/populate_db.py"
 
-if [ ! -f "$DB" ] || [ "$FORCE_DB_INIT" = "1" ]; then
+if [ ! -f "$DB" ] || [ "${FORCE_DB_INIT:-}" = "1" ]; then
   echo "Inicializando base de datos en $DB"
   sqlite3 "$DB" < "$SCHEMA"
 
