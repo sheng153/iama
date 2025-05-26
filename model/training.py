@@ -11,7 +11,7 @@ conn.close()
 examples = [{"text": f"{r[0]} : {r[1]}\n"} for r in rows]
 ds = Dataset.from_list(examples)
 
-model_id = "phi-2"
+model_id = "microsoft/phi-2"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(model_id)
 
