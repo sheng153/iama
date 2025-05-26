@@ -4,7 +4,6 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, Trainer, TrainingA
 
 IGNORE_LETTERS = ['?','!','.',',']
 
-embedder = SentenceTransformer('all-MiniLM-L6-v2')
 conn = sqlite3.connect("/data/dev.db")
 rows = conn.execute("SELECT role, content FROM conversation ORDER BY timestamp").fetchall()
 conn.close()
