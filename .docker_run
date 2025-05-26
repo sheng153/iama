@@ -4,5 +4,5 @@ set -euo pipefail
 if [ $# -gt 0 ]; then
     docker-compose run --rm app "$@"
 else
-    docker-compose up --build
+    docker-compose run --service-ports --rm app python3 model/main.py
 fi

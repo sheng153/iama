@@ -33,3 +33,4 @@ training = Trainer(
 
 trainer.train()
 trainer.save_model("/data/phi2-chatbot")
+tokenizer.save_pretrained("/data/phi2-chatbot")
